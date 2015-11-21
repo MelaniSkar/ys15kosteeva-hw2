@@ -47,8 +47,9 @@ public class PrefixMatches {
 
     public LinkedList<String> wordsWithPrefix(String pref, int k) {
         LinkedList<String> resWords = new LinkedList<>();
-        if (pref.length() >= 3) {
-            LinkedList<String> allWords = (LinkedList) trie.wordsWithPrefix(pref);
+        if (pref.length() >= MIN_LEN) {
+            LinkedList<String> allWords 
+                    = (LinkedList) trie.wordsWithPrefix(pref);
             int maxLength = 0;
             for (String word : allWords) {
                 if (word.length() > maxLength) {

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 public class RWayTrie implements Trie {
 
     public static final int SIZE = 26;
-    Node root = new Node();
+    private Node root = new Node();
 
     private class Node {
 
@@ -81,8 +81,7 @@ public class RWayTrie implements Trie {
                 currentNode = currentNode.next[prefix.charAt(i) - 'a'];
             }
             currentStrings.addLast(prefix);
-        }
-        else {
+        } else {
             currentStrings.addLast("");
         }
         currentNodes.addLast(currentNode);
@@ -95,7 +94,7 @@ public class RWayTrie implements Trie {
             for (int i = 0; i < SIZE; i++) {
                 if (currentNode.next[i] != null) {
                     currentNodes.add(currentNode.next[i]);
-                    currentStrings.add(currentString + (char)(i + 'a'));
+                    currentStrings.add(currentString + (char) (i + 'a'));
                 }
             }
         }
@@ -105,23 +104,23 @@ public class RWayTrie implements Trie {
 
     @Override
     public LinkedList<String> words() {
-        return allWordsWithPrefix(root,"");
+        return allWordsWithPrefix(root, "");
 
     }
 
     @Override
     public LinkedList<String> wordsWithPrefix(String s) {
-        return allWordsWithPrefix(root,s);
+        return allWordsWithPrefix(root, s);
     }
 
     private int size(Node node) {
         int result = 0;
-        
+
         if (node.weight != 0) {
             result++;
         }
         for (int i = 0; i < SIZE; i++) {
-            if(node.next[i] != null) {
+            if (node.next[i] != null) {
                 result += size(node.next[i]);
             }
         }
