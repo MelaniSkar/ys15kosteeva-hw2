@@ -86,10 +86,23 @@ public class RWayTrieTest {
         rwayTrie.add(new Tuple("ara", 3));
         rwayTrie.add(new Tuple("aaua", 4));
         LinkedList<String> expList = new LinkedList<>();
+        expList.add("ara");
+        LinkedList<String> resList = rwayTrie.wordsWithPrefix("ar");
+        boolean expResult = true;
+        boolean result = (expList.containsAll(resList)&&resList.containsAll(expList));
+        assertEquals(expResult, result);
+    }
+    @Test
+    public void testIterableWithNullPrefix() {
+        RWayTrie rwayTrie = new RWayTrie();
+        rwayTrie.add(new Tuple("aaa", 3));
+        rwayTrie.add(new Tuple("ara", 3));
+        rwayTrie.add(new Tuple("aaua", 4));
+        LinkedList<String> expList = new LinkedList<>();
         expList.add("aaa");
         expList.add("ara");
         expList.add("aaua");
-        LinkedList<String> resList = rwayTrie.wordsWithPrefix("a");
+        LinkedList<String> resList = rwayTrie.wordsWithPrefix(null);
         boolean expResult = true;
         boolean result = (expList.containsAll(resList)&&resList.containsAll(expList));
         assertEquals(expResult, result);

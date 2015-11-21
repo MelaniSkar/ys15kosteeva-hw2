@@ -61,7 +61,7 @@ public class PrefixMatchesTest {
         PrefixMatches prefixMatches = new PrefixMatches();
         prefixMatches.load("abc abcd abce abcde abcdef  abcgjfns  abckdrrgfghtr");
         LinkedList<String> expList = new LinkedList<>();
-        LinkedList<String> resList = prefixMatches.wordsWithPrefix("");
+        LinkedList<String> resList = prefixMatches.wordsWithPrefix("a");
         boolean expResult = true;
         boolean result = (expList.containsAll(resList) && resList.containsAll(expList));
         assertEquals(expResult, result);
