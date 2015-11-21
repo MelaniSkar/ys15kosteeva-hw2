@@ -16,10 +16,6 @@ public class RWayTrie implements Trie {
             next = new Node[SIZE];
             weight = 0;
         }
-
-        public Node(int w) {
-            weight = w;
-        }
     }
 
     @Override

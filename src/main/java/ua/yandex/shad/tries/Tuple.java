@@ -18,12 +18,4 @@ public class Tuple {
         return weight;
     }
 
-    public void setTerm(String t) {
-        this.term = t;
-    }
-
-    public void setWeight(int w) {
-        this.weight = w;
-    }
-
 }
