@@ -7,7 +7,7 @@ public class RWayTrie implements Trie {
     public static final int SIZE = 26;
     private Node root = new Node();
 
-    private class Node {
+    private static class Node {
 
         private Node[] next;
         private int weight;
