@@ -21,55 +21,73 @@ public class PrefixMatches {
         this.trie = new RWayTrie();
     }
 
-    public class Iterate implements Iterable<String> {
+    private class Iter implements Iterator<String> {
 
-        public String prefix;
+        private String prefix;
         private int countOfDifferentLength;
         private int currentLength;
         private int numberOfDifLength;
 
-        public Iterate() {
+        public Iter() {
             countOfDifferentLength = 0;
             currentLength = 0;
-            numberOfDifLength = 3;
+            numberOfDifLength = K;
             prefix = "";
         }
 
-        public Iterate(int k, String pref) {
+        public Iter(int k, String pref) {
             numberOfDifLength = k;
             prefix = pref;
         }
 
         @Override
+        public boolean hasNext() {
+            if (countOfDifferentLength < numberOfDifLength) {
+                return trie.wordsWithPrefix(prefix)
+                        .iterator()
+                        .hasNext();
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public String next() {
+            if (hasNext()) {
+                String next = trie.wordsWithPrefix(prefix)
+                        .iterator()
+                        .next();
+                if (currentLength != next.length()) {
+                    countOfDifferentLength++;
+                    currentLength = next.length();
+                }
+                return next;
+            } else {
+                throw new NoSuchElementException();
+            }
+
+        }
+    }
+
+    public class Iterate implements Iterable<String> {
+
+        Iter iter;
+
+        public Iterate() {
+
+        }
+
+        public Iterate(int k, String pref) {
+            iter = new Iter(k, pref);
+        }
+
+        @Override
         public Iterator<String> iterator() {
 
-            return new Iterator<String>() {
-                @Override
-                public boolean hasNext() {
-                    if (countOfDifferentLength < numberOfDifLength) {
-                        return trie.wordsWithPrefix(prefix).iterator().hasNext();
-                    } else {
-                        return false;
-                    }
-                }
+            return iter;
 
-                @Override
-                public String next() {
-                    if (hasNext()) {
-                        String next = trie.wordsWithPrefix(prefix).iterator().next();
-                        if (currentLength != next.length()) {
-                            countOfDifferentLength++;
-                            currentLength = next.length();
-                        }
-                        return next;
-                    } else {
-                        throw new NoSuchElementException();
-                    }
-
-                }
-
-            };
         }
+    ;
 
     }
 
@@ -95,7 +113,7 @@ public class PrefixMatches {
     }
 
     public Iterable<String> wordsWithPrefix(String pref) {
-        return wordsWithPrefix(pref, K);
+        return new Iterate(K, pref);
     }
 
     public Iterable<String> wordsWithPrefix(String pref, int k) {

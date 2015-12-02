@@ -80,13 +80,13 @@ public class RWayTrie implements Trie {
         }
     }
 
-    public class Iterate implements Iterable<String> {
+    private static class Iter implements Iterator<String> {
 
         private DynamicArray<Node> currentNodes;
         private DynamicArray<String> currentStrings;
         private int lastIndex;
 
-        public Iterate(Node startNode, String startString) {
+        public Iter(Node startNode, String startString) {
             this.currentNodes = new DynamicArray<>();
             currentNodes.add(startNode);
             this.currentStrings = new DynamicArray<>();
@@ -114,36 +114,44 @@ public class RWayTrie implements Trie {
         }
 
         @Override
-        public Iterator<String> iterator() {
-
-            return new Iterator<String>() {
-                @Override
-                public boolean hasNext() {
-                    while (currentNodes.length > 0) {
-                        while (lastIndex + 1 < currentNodes.length) {
-                            if (currentNodes.get(lastIndex + 1).weight != 0) {
-                                return true;
-                            } else {
-                                lastIndex++;
-                            }
-                        }
-                        formNextLength();
-                    }
-                    return false;
-                }
-
-                @Override
-                public String next() {
-                    if (hasNext()) {
-                        lastIndex++;
-                        return currentStrings.get(lastIndex);
-                                
+        public boolean hasNext() {
+            while (currentNodes.length > 0) {
+                while (lastIndex + 1 < currentNodes.length) {
+                    if (currentNodes.get(lastIndex + 1).weight != 0) {
+                        return true;
                     } else {
-                        throw new NoSuchElementException();
+                        lastIndex++;
                     }
                 }
+                formNextLength();
+            }
+            return false;
+        }
 
-            };
+        @Override
+        public String next() {
+            if (hasNext()) {
+                lastIndex++;
+                return currentStrings.get(lastIndex);
+
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+
+    }
+
+    private static class Iterate implements Iterable<String> {
+
+        Iter iter;
+
+        public Iterate(Node startNode, String startString) {
+            iter = new Iter(startNode, startString);
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return iter;
         }
 
     }
@@ -201,8 +209,8 @@ public class RWayTrie implements Trie {
     @Override
 
     public Iterable<String> wordsWithPrefix(String s) {
-        Node currentNode = bfs.currentNodes.get(0);
-        String currentString = bfs.currentStrings.get(0);
+        Node currentNode = bfs.iter.currentNodes.get(0);
+        String currentString;
         if (currentNode == root) {
             if (s.length() >= 2) {
                 for (int i = 0; i < s.length(); i++) {
