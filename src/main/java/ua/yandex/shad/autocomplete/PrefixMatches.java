@@ -21,12 +21,13 @@ public class PrefixMatches {
         this.trie = new RWayTrie();
     }
 
-    private class Iter implements Iterator<String> {
-
+    public static class Iter implements Iterator<String> {
+        
         private String prefix;
         private int countOfDifferentLength;
         private int currentLength;
         private int numberOfDifLength;
+        
 
         public Iter() {
             countOfDifferentLength = 0;
@@ -36,6 +37,8 @@ public class PrefixMatches {
         }
 
         public Iter(int k, String pref) {
+            countOfDifferentLength = 0;
+            currentLength = 0;
             numberOfDifLength = k;
             prefix = pref;
         }
@@ -69,12 +72,12 @@ public class PrefixMatches {
         }
     }
 
-    public class Iterate implements Iterable<String> {
+    public static class Iterate implements Iterable<String> {
 
-        Iter iter;
+        private Iter iter;
 
         public Iterate() {
-
+            iter = new Iter();
         }
 
         public Iterate(int k, String pref) {

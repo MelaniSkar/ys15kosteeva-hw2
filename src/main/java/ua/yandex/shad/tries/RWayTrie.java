@@ -5,15 +5,15 @@ import java.util.NoSuchElementException;
 
 public class RWayTrie implements Trie {
 
-    public static final int ALFABET_SIZE = 26;
+    private static final int ALFABET_SIZE = 26;
     private final Node root = new Node();
-    private Iterate bfs;
+    private RWayIterate bfs;
 
     public RWayTrie() {
-        bfs = new Iterate(root, "");
+        bfs = new RWayIterate(root, "");
     }
 
-    private static class DynamicArray<Type> {
+    public static class DynamicArray<Type> {
 
         private Type[] elements;
         private int length;
@@ -69,7 +69,7 @@ public class RWayTrie implements Trie {
         }
     }
 
-    private static class Node {
+    public static class Node {
 
         private final Node[] next;
         private int weight;
@@ -80,13 +80,13 @@ public class RWayTrie implements Trie {
         }
     }
 
-    private static class Iter implements Iterator<String> {
+    public static class RWayIter implements Iterator<String> {
 
         private DynamicArray<Node> currentNodes;
         private DynamicArray<String> currentStrings;
         private int lastIndex;
 
-        public Iter(Node startNode, String startString) {
+        public RWayIter(Node startNode, String startString) {
             this.currentNodes = new DynamicArray<>();
             currentNodes.add(startNode);
             this.currentStrings = new DynamicArray<>();
@@ -141,12 +141,12 @@ public class RWayTrie implements Trie {
 
     }
 
-    private static class Iterate implements Iterable<String> {
+    public static class RWayIterate implements Iterable<String> {
 
-        Iter iter;
+        RWayIter iter;
 
-        public Iterate(Node startNode, String startString) {
-            iter = new Iter(startNode, startString);
+        public RWayIterate(Node startNode, String startString) {
+            iter = new RWayIter(startNode, startString);
         }
 
         @Override
@@ -176,7 +176,6 @@ public class RWayTrie implements Trie {
         Node rootToWorkWith = root;
         for (i = 0; i < word.length(); i++) {
             if (rootToWorkWith.next[word.charAt(i) - 'a'] == null) {
-                //System.out.println(i);
                 return false;
             } else {
                 rootToWorkWith = rootToWorkWith.next[word.charAt(i) - 'a'];
@@ -221,7 +220,7 @@ public class RWayTrie implements Trie {
                 throw new NoSuchElementException();
             }
 
-            bfs = new Iterate(currentNode, currentString);
+            bfs = new RWayIterate(currentNode, currentString);
         }
         return bfs;
     }

@@ -86,7 +86,7 @@ public class PrefixMatchesTest {
         boolean result = (expList.containsAll(resList) && resList.containsAll(expList));
         assertEquals(expResult, result);
     }
-  
+
     @Test
     public void testWordsWithPrefix() {
         PrefixMatches prefixMatches = new PrefixMatches();
@@ -109,7 +109,7 @@ public class PrefixMatchesTest {
         boolean result = (expList.containsAll(resList) && resList.containsAll(expList));
         assertEquals(expResult, result);
     }
-  
+
     @Test
     public void testSizeWithNoWordsInString() {
         PrefixMatches prefixMatches = new PrefixMatches();

@@ -105,9 +105,8 @@ public class RWayTrieTest {
         boolean result = (expList.containsAll(resList) && resList.containsAll(expList));
         assertEquals(expResult, result);
     }
-    
 
- @Test (expected = NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testIterableExpectException() {
         RWayTrie rwayTrie = new RWayTrie();
         rwayTrie.add(new Tuple("aaa", 3));
@@ -120,7 +119,7 @@ public class RWayTrieTest {
         expList.add("aaua");
         rwayTrie.wordsWithPrefix("a");
     }
-    
+
     @Test
     public void testSize() {
         RWayTrie rwayTrie = new RWayTrie();
@@ -134,7 +133,7 @@ public class RWayTrieTest {
         int result = rwayTrie.size();
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testSizeOfEmptyNode() {
         RWayTrie rwayTrie = new RWayTrie();
