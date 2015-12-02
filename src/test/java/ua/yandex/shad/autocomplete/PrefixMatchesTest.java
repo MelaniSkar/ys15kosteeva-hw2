@@ -2,6 +2,7 @@ package ua.yandex.shad.autocomplete;
 
 import org.junit.Test;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import static org.junit.Assert.*;
 
 public class PrefixMatchesTest {
@@ -25,9 +26,9 @@ public class PrefixMatchesTest {
     @Test
     public void testLoadOnCorrectAdd() {
         PrefixMatches prefixMatches = new PrefixMatches();
-        prefixMatches.load("abc abcd abce abcde abcdef");
+        prefixMatches.load("abc abcd abce abcde       abcdef  abcgjfns  abckdrrgfghtr");
         boolean expResult = true;
-        boolean result = (prefixMatches.contains("abc") && prefixMatches.contains("abcd") && prefixMatches.contains("abce"));
+        boolean result = (prefixMatches.contains("abc") && prefixMatches.contains("abcd") && prefixMatches.contains("abcdef"));
         assertEquals(expResult, result);
     }
 
@@ -39,6 +40,7 @@ public class PrefixMatchesTest {
         boolean result = (prefixMatches.contains("ab") && prefixMatches.contains("abcd") && prefixMatches.contains("abce"));
         assertEquals(expResult, result);
     }
+
     @Test
     public void testDeleteExpectTrue() {
         PrefixMatches prefixMatches = new PrefixMatches();
@@ -56,23 +58,26 @@ public class PrefixMatchesTest {
         boolean result = prefixMatches.delete("aoo");
         assertEquals(expResult, result);
     }
-    @Test
+
+    @Test(expected = NoSuchElementException.class)
     public void testWordsWithPrefixLessThenMin() {
         PrefixMatches prefixMatches = new PrefixMatches();
         prefixMatches.load("abc abcd abce abcde abcdef  abcgjfns  abckdrrgfghtr");
-        LinkedList<String> expList = new LinkedList<>();
-        LinkedList<String> resList = prefixMatches.wordsWithPrefix("a");
-        boolean expResult = true;
-        boolean result = (expList.containsAll(resList) && resList.containsAll(expList));
-        assertEquals(expResult, result);
+        Iterable<String> iter = prefixMatches.wordsWithPrefix("a");
+        iter.iterator().next();
     }
-    
+
     @Test
     public void testWordsWithPrefixAndStandartK() {
         PrefixMatches prefixMatches = new PrefixMatches();
-        prefixMatches.load("abc abcd abce abcde abcdef  abcgjfns  abckdrrgfghtr");
+        prefixMatches.load("abc abcd abce abcde       abcdef  abcgjfns  "
+                + "abckdrrgfghtr");
         LinkedList<String> expList = new LinkedList<>();
-        LinkedList<String> resList = prefixMatches.wordsWithPrefix("abc");
+        Iterable<String> iter = prefixMatches.wordsWithPrefix("abc");
+        LinkedList<String> resList = new LinkedList<>();
+        while (iter.iterator().hasNext()) {
+            resList.add(iter.iterator().next());
+        }
         expList.add("abc");
         expList.add("abcd");
         expList.add("abce");
@@ -81,13 +86,18 @@ public class PrefixMatchesTest {
         boolean result = (expList.containsAll(resList) && resList.containsAll(expList));
         assertEquals(expResult, result);
     }
-
+  
     @Test
     public void testWordsWithPrefix() {
         PrefixMatches prefixMatches = new PrefixMatches();
         prefixMatches.load("abc abcd abce abcde abcdef  abcgjfns  abckdrrgfghtr");
         LinkedList<String> expList = new LinkedList<>();
-        LinkedList<String> resList = prefixMatches.wordsWithPrefix("abc", 6);
+        Iterable<String> iter = prefixMatches.wordsWithPrefix("abc", 6);
+        LinkedList<String> resList = new LinkedList<>();
+        while (iter.iterator().hasNext()) {
+            //System.out.println(iter.iterator().next());
+            resList.add(iter.iterator().next());
+        }
         expList.add("abc");
         expList.add("abcd");
         expList.add("abce");
@@ -99,7 +109,7 @@ public class PrefixMatchesTest {
         boolean result = (expList.containsAll(resList) && resList.containsAll(expList));
         assertEquals(expResult, result);
     }
-
+  
     @Test
     public void testSizeWithNoWordsInString() {
         PrefixMatches prefixMatches = new PrefixMatches();

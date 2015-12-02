@@ -5,19 +5,72 @@
  */
 package ua.yandex.shad.autocomplete;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import ua.yandex.shad.tries.Trie;
-import java.util.LinkedList;
 import ua.yandex.shad.tries.Tuple;
 import ua.yandex.shad.tries.RWayTrie;
 
 public class PrefixMatches {
 
-    public static final int MIN_LEN = 3;
+    public static final int MIN_LEN = 2;
     public static final int K = 3;
-    private Trie trie;
+    private final Trie trie;
 
     public PrefixMatches() {
         this.trie = new RWayTrie();
+    }
+
+    public class Iterate implements Iterable<String> {
+
+        public String prefix;
+        private int countOfDifferentLength;
+        private int currentLength;
+        private int numberOfDifLength;
+
+        public Iterate() {
+            countOfDifferentLength = 0;
+            currentLength = 0;
+            numberOfDifLength = 3;
+            prefix = "";
+        }
+
+        public Iterate(int k, String pref) {
+            numberOfDifLength = k;
+            prefix = pref;
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+
+            return new Iterator<String>() {
+                @Override
+                public boolean hasNext() {
+                    if (countOfDifferentLength < numberOfDifLength) {
+                        return trie.wordsWithPrefix(prefix).iterator().hasNext();
+                    } else {
+                        return false;
+                    }
+                }
+
+                @Override
+                public String next() {
+                    if (hasNext()) {
+                        String next = trie.wordsWithPrefix(prefix).iterator().next();
+                        if (currentLength != next.length()) {
+                            countOfDifferentLength++;
+                            currentLength = next.length();
+                        }
+                        return next;
+                    } else {
+                        throw new NoSuchElementException();
+                    }
+
+                }
+
+            };
+        }
+
     }
 
     public int load(String... strings) {
@@ -41,34 +94,13 @@ public class PrefixMatches {
         return trie.delete(word);
     }
 
-    public LinkedList<String> wordsWithPrefix(String pref) {
-        return this.wordsWithPrefix(pref, K);
+    public Iterable<String> wordsWithPrefix(String pref) {
+        return wordsWithPrefix(pref, K);
     }
 
-    public LinkedList<String> wordsWithPrefix(String pref, int k) {
-        LinkedList<String> resWords = new LinkedList<>();
-        if (pref.length() >= MIN_LEN) {
-            LinkedList<String> allWords 
-                    = (LinkedList) trie.wordsWithPrefix(pref);
-            int maxLength = 0;
-            for (String word : allWords) {
-                if (word.length() > maxLength) {
-                    maxLength = word.length();
-                }
-            }
-            int[] addedLength = new int[maxLength + 1];
-            int countOfAddedLength = 0;
-            for (String word : allWords) {
-                if (addedLength[word.length()] == 1) {
-                    resWords.add(word);
-                } else if (countOfAddedLength < k) {
-                    countOfAddedLength++;
-                    addedLength[word.length()] = 1;
-                    resWords.add(word);
-                }
-            }
-        }
-        return resWords;
+    public Iterable<String> wordsWithPrefix(String pref, int k) {
+        return new Iterate(k, pref);
+
     }
 
     public int size() {
