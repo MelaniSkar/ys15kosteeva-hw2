@@ -27,7 +27,7 @@ public class PrefixMatches {
         private int countOfDifferentLength;
         private int currentLength;
         private final int numberOfDifLength;
-        RWayBfsIterator rwayBfsIterator;
+        private final RWayBfsIterator rwayBfsIterator;
 
         public BfsIterator(int k, String pref, Trie trie) {
             countOfDifferentLength = 0;
@@ -73,9 +73,7 @@ public class PrefixMatches {
         @Override
         public Iterator<String> iterator() {
             return iterator;
-        }
-    ;
-
+        };
     }
 
     public int load(String... strings) {

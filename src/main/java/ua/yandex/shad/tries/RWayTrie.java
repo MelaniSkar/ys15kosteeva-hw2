@@ -6,15 +6,14 @@ import java.util.NoSuchElementException;
 public class RWayTrie implements Trie {
 
     private static final int ALFABET_SIZE = 26;
-    private final Node root = new Node();
-    private RWayBfsIterable bfs;
+    private final Node root;
+
+    public RWayTrie() {
+        root = new Node();
+    }
 
     public Node getRoot() {
         return root;
-    }
-
-    public RWayTrie() {
-        bfs = new RWayBfsIterable(root, "");
     }
 
     private static class DynamicArray<Type> {
@@ -89,7 +88,7 @@ public class RWayTrie implements Trie {
         private DynamicArray<Node> currentNodes;
         private DynamicArray<String> currentStrings;
         private int lastIndex;
-        String prefix;
+        private String prefix;
 
         public RWayBfsIterator(Node startNode, String prefix) {
             this.prefix = prefix;
@@ -101,8 +100,7 @@ public class RWayTrie implements Trie {
                     currentNode = currentNode.next[prefix.charAt(i) - 'a'];
                 }
                 currentStrings.add(prefix);
-            }
-            else {
+            } else {
                 currentStrings.add("");
             }
             currentNodes.add(currentNode);
@@ -161,7 +159,7 @@ public class RWayTrie implements Trie {
 
     public static class RWayBfsIterable implements Iterable<String> {
 
-        RWayBfsIterator iterator;
+        private RWayBfsIterator iterator;
 
         public RWayBfsIterable(Node startNode, String prefix) {
             iterator = new RWayBfsIterator(startNode, prefix);
