@@ -22,11 +22,9 @@ public class RWayTrie implements Trie {
         private int length;
 
         public DynamicArray() {
-            this.elements = (Type[])new Object[0];
+            this.elements = (Type[]) new Object[0];
             length = 0;
         }
-
-        
 
         public Type get(int number) {
             return elements[number];
