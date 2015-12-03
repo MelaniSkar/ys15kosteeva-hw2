@@ -8,6 +8,7 @@ package ua.yandex.shad.autocomplete;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import ua.yandex.shad.tries.Trie;
+import ua.yandex.shad.tries.RWayTrie.RWayBfsIterator;
 import ua.yandex.shad.tries.Tuple;
 import ua.yandex.shad.tries.RWayTrie;
 
@@ -21,34 +22,25 @@ public class PrefixMatches {
         this.trie = new RWayTrie();
     }
 
-    public static class Iter implements Iterator<String> {
-        
-        private String prefix;
+    public static class BfsIterator implements Iterator<String> {
+
         private int countOfDifferentLength;
         private int currentLength;
-        private int numberOfDifLength;
-        
+        private final int numberOfDifLength;
+        RWayBfsIterator rwayBfsIterator;
 
-        public Iter() {
-            countOfDifferentLength = 0;
-            currentLength = 0;
-            numberOfDifLength = K;
-            prefix = "";
-        }
-
-        public Iter(int k, String pref) {
+        public BfsIterator(int k, String pref, Trie trie) {
             countOfDifferentLength = 0;
             currentLength = 0;
             numberOfDifLength = k;
-            prefix = pref;
+            rwayBfsIterator = new RWayBfsIterator(((RWayTrie) trie)
+                    .getRoot(), pref);
         }
 
         @Override
         public boolean hasNext() {
             if (countOfDifferentLength < numberOfDifLength) {
-                return trie.wordsWithPrefix(prefix)
-                        .iterator()
-                        .hasNext();
+                return rwayBfsIterator.hasNext();
             } else {
                 return false;
             }
@@ -57,9 +49,7 @@ public class PrefixMatches {
         @Override
         public String next() {
             if (hasNext()) {
-                String next = trie.wordsWithPrefix(prefix)
-                        .iterator()
-                        .next();
+                String next = rwayBfsIterator.next();
                 if (currentLength != next.length()) {
                     countOfDifferentLength++;
                     currentLength = next.length();
@@ -72,23 +62,17 @@ public class PrefixMatches {
         }
     }
 
-    public static class Iterate implements Iterable<String> {
+    public static class BfsIterable implements Iterable<String> {
 
-        private Iter iter;
+        private final BfsIterator iterator;
 
-        public Iterate() {
-            iter = new Iter();
-        }
-
-        public Iterate(int k, String pref) {
-            iter = new Iter(k, pref);
+        public BfsIterable(int k, String pref, Trie trie) {
+            iterator = new BfsIterator(k, pref, trie);
         }
 
         @Override
         public Iterator<String> iterator() {
-
-            return iter;
-
+            return iterator;
         }
     ;
 
@@ -116,11 +100,11 @@ public class PrefixMatches {
     }
 
     public Iterable<String> wordsWithPrefix(String pref) {
-        return new Iterate(K, pref);
+        return new BfsIterable(K, pref, trie);
     }
 
     public Iterable<String> wordsWithPrefix(String pref, int k) {
-        return new Iterate(k, pref);
+        return new BfsIterable(k, pref, trie);
 
     }
 

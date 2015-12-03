@@ -77,14 +77,16 @@ public class RWayTrieTest {
         expList.add("aaa");
         expList.add("ara");
         expList.add("aaua");
-
+        
         Iterable<String> iter = rwayTrie.words();
         LinkedList<String> resList = new LinkedList<>();
+        System.out.println(iter.iterator().hasNext());
         while (iter.iterator().hasNext()) {
             resList.add(iter.iterator().next());
         }
         boolean expResult = true;
-        boolean result = (expList.containsAll(resList) && resList.containsAll(expList));
+        boolean result = (expList.containsAll(resList)
+                && resList.containsAll(expList));
         assertEquals(expResult, result);
     }
 
@@ -113,11 +115,8 @@ public class RWayTrieTest {
         rwayTrie.add(new Tuple("ara", 3));
         rwayTrie.add(new Tuple("aaua", 4));
         rwayTrie.add(new Tuple("aauau", 5));
-        LinkedList<String> expList = new LinkedList<>();
-        expList.add("aaa");
-        expList.add("ara");
-        expList.add("aaua");
-        rwayTrie.wordsWithPrefix("a");
+        rwayTrie.wordsWithPrefix("a").iterator().next();
+        
     }
 
     @Test

@@ -7,13 +7,17 @@ public class RWayTrie implements Trie {
 
     private static final int ALFABET_SIZE = 26;
     private final Node root = new Node();
-    private RWayIterate bfs;
+    private RWayBfsIterable bfs;
 
-    public RWayTrie() {
-        bfs = new RWayIterate(root, "");
+    public Node getRoot() {
+        return root;
     }
 
-    public static class DynamicArray<Type> {
+    public RWayTrie() {
+        bfs = new RWayBfsIterable(root, "");
+    }
+
+    private static class DynamicArray<Type> {
 
         private Type[] elements;
         private int length;
@@ -80,17 +84,28 @@ public class RWayTrie implements Trie {
         }
     }
 
-    public static class RWayIter implements Iterator<String> {
+    public static class RWayBfsIterator implements Iterator<String> {
 
         private DynamicArray<Node> currentNodes;
         private DynamicArray<String> currentStrings;
         private int lastIndex;
+        String prefix;
 
-        public RWayIter(Node startNode, String startString) {
+        public RWayBfsIterator(Node startNode, String prefix) {
+            this.prefix = prefix;
+            Node currentNode = startNode;
             this.currentNodes = new DynamicArray<>();
-            currentNodes.add(startNode);
             this.currentStrings = new DynamicArray<>();
-            currentStrings.add(startString);
+            if (prefix != null) {
+                for (int i = 0; i < prefix.length(); i++) {
+                    currentNode = currentNode.next[prefix.charAt(i) - 'a'];
+                }
+                currentStrings.add(prefix);
+            }
+            else {
+                currentStrings.add("");
+            }
+            currentNodes.add(currentNode);
             this.lastIndex = -1;
         }
 
@@ -115,6 +130,9 @@ public class RWayTrie implements Trie {
 
         @Override
         public boolean hasNext() {
+            if (prefix != null && prefix.length() < 2) {
+                return false;
+            }
             while (currentNodes.length > 0) {
                 while (lastIndex + 1 < currentNodes.length) {
                     if (currentNodes.get(lastIndex + 1).weight != 0) {
@@ -141,17 +159,17 @@ public class RWayTrie implements Trie {
 
     }
 
-    public static class RWayIterate implements Iterable<String> {
+    public static class RWayBfsIterable implements Iterable<String> {
 
-        RWayIter iter;
+        RWayBfsIterator iterator;
 
-        public RWayIterate(Node startNode, String startString) {
-            iter = new RWayIter(startNode, startString);
+        public RWayBfsIterable(Node startNode, String prefix) {
+            iterator = new RWayBfsIterator(startNode, prefix);
         }
 
         @Override
         public Iterator<String> iterator() {
-            return iter;
+            return iterator;
         }
 
     }
@@ -202,27 +220,13 @@ public class RWayTrie implements Trie {
 
     @Override
     public Iterable<String> words() {
-        return this.bfs;
+        return new RWayBfsIterable(root, null);
     }
 
     @Override
 
     public Iterable<String> wordsWithPrefix(String s) {
-        Node currentNode = bfs.iter.currentNodes.get(0);
-        String currentString;
-        if (currentNode == root) {
-            if (s.length() >= 2) {
-                for (int i = 0; i < s.length(); i++) {
-                    currentNode = currentNode.next[s.charAt(i) - 'a'];
-                }
-                currentString = s;
-            } else {
-                throw new NoSuchElementException();
-            }
-
-            bfs = new RWayIterate(currentNode, currentString);
-        }
-        return bfs;
+        return new RWayBfsIterable(root, s);
     }
 
     private int size(Node node) {
