@@ -24,23 +24,8 @@ public class RWayTrie implements Trie {
         public DynamicArray() {
         }
 
-        public DynamicArray(Type[] elements) {
-            this.elements = elements;
-            this.length = elements.length;
-        }
-
         public Type get(int number) {
             return elements[number];
-        }
-
-        public Type[] getValues() {
-            Type[] res = (Type[]) new Object[elements.length];
-            System.arraycopy(elements, 0, res, 0, elements.length);
-            return res;
-        }
-
-        public int getLength() {
-            return this.length;
         }
 
         public int add(Type... strings) {
